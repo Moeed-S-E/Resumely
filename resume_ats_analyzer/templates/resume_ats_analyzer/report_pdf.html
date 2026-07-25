@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>ATS Resume Report</title>
+<style>
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; margin: 40px; }
+    h1 { color: #00288e; border-bottom: 2px solid #00288e; padding-bottom: 5px; font-size: 24px; }
+    h2 { color: #00288e; font-size: 18px; margin-top: 25px; }
+    .score-container { text-align: center; margin: 30px 0; }
+    .score { font-size: 48px; font-weight: bold; color: #16a34a; }
+    .section { margin-bottom: 20px; }
+    ul { margin: 10px 0; padding-left: 20px; }
+    li { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+    <h1>ATS Resume Analysis Report</h1>
+    
+    <div class="score-container">
+        <div>Match Score</div>
+        <div class="score">{{ analysis.match_score }}%</div>
+    </div>
+    
+    <div class="section">
+        <h2>Strengths</h2>
+        <ul>
+            {% for item in strengths %}
+                <li>{{ item }}</li>
+            {% empty %}
+                <li>No specific strengths identified.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>Weaknesses</h2>
+        <ul>
+            {% for item in weaknesses %}
+                <li>{{ item }}</li>
+            {% empty %}
+                <li>No significant weaknesses found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>Missing Keywords</h2>
+        <ul>
+            {% for item in keywords %}
+                <li>{{ item }}</li>
+            {% empty %}
+                <li>No missing keywords identified.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>Suggestions for Improvement</h2>
+        <ul>
+            {% for item in suggestions %}
+                <li>{{ item }}</li>
+            {% empty %}
+                <li>No specific suggestions.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

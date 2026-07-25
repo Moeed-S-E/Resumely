@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Resumely | ATS Analyzer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+    }
+  }
+</script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Plus+Jakarta+Sans:wght@700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#b8c4ff",
+                        "border-subtle": "#e2e8f0",
+                        "inverse-surface": "#2d3133",
+                        "success-green": "#16a34a",
+                        "secondary-container": "#86f2e4",
+                        "primary": "#00288e",
+                        "surface-container-lowest": "#ffffff",
+                        "critical-tint": "#fee2e2",
+                        "on-primary-fixed": "#001453",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed": "#00201d",
+                        "primary-container": "#1e40af",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed": "#d5e3fc",
+                        "outline-variant": "#c4c5d5",
+                        "surface-bright": "#f7f9fb",
+                        "warning-tint": "#fef3c7",
+                        "outline": "#757684",
+                        "surface": "#f7f9fb",
+                        "text-heading": "#0f172a",
+                        "tertiary": "#273548",
+                        "secondary-fixed": "#89f5e7",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "primary-fixed": "#dde1ff",
+                        "on-primary-container": "#a8b8ff",
+                        "on-primary-fixed-variant": "#173bab",
+                        "warning-amber": "#d97706",
+                        "surface-container-low": "#f2f4f6",
+                        "critical-red": "#dc2626",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#444653",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-container": "#aebcd4",
+                        "surface-variant": "#e0e3e5",
+                        "surface-tint": "#3755c3",
+                        "success-tint": "#dcfce7",
+                        "tertiary-fixed-dim": "#b9c7df",
+                        "tertiary-container": "#3e4c60",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#006f66",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary": "#006a61"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "margin-desktop": "40px",
+                        "gutter": "16px",
+                        "sidebar-width": "420px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "stat-lg": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .dropzone-active {
+            background-color: #f0f7ff;
+            border-color: #00288e !important;
+            border-style: solid !important;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface font-body-base min-h-screen flex flex-col">
+
+    <!-- Splash Screen -->
+    <div id="splashScreen" style="background: radial-gradient(ellipse at top left, #F4F6FF 0%, #6B85E8 100%);"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center text-text-heading transition-opacity duration-700 overflow-hidden">
+        <!-- WebGL Canvas Container -->
+        <div id="splashCanvasContainer" class="absolute inset-0 z-0"></div>
+
+        <!-- Fallback / Text Overlay -->
+        <div id="splashText"
+            class="z-10 flex flex-col items-center justify-center opacity-0 transition-opacity duration-700 mt-32 pointer-events-none">
+            <h1 class="text-6xl font-display-lg font-extrabold tracking-tight mb-2 text-text-heading drop-shadow-sm">
+                Resumely</h1>
+            <p class="text-xl font-headline-sm text-primary">Beat the ATS. Get the interview.</p>
+        </div>
+    </div>
+
+    <!-- TopNavBar -->
+    <header
+        class="bg-surface border-b border-border-subtle shadow-sm flex justify-between items-center w-full px-base md:px-margin-desktop h-16 max-w-container-max mx-auto sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <a href="{% url 'resume_ats_analyzer:upload' %}"
+                class="text-headline-md font-headline-md font-extrabold text-primary hover:underline">Resumely</a>
+        </div>
+    </header>
+    <main
+        class="flex-grow flex flex-col items-center px-margin-mobile md:px-margin-desktop py-12 md:py-20 relative overflow-hidden">
+        <div class="w-full max-w-4xl z-10">
+            <div class="text-center mb-12">
+                <h1 class="text-display-lg font-display-lg text-text-heading mb-4 leading-tight">
+                    Is Your Resume <span class="text-primary">ATS-Friendly?</span>
+                </h1>
+                <p class="text-headline-sm font-headline-sm text-on-surface-variant max-w-2xl mx-auto">
+                    Upload your resume and paste the job description to see how well you match. Our AI analyzes
+                    keywords, formatting, and industry relevance.
+                </p>
+            </div>
+
+            {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                <div class="p-4 mb-2 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if form.errors %}
+            <div class="mb-6">
+                <div class="p-4 mb-2 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                    Please correct the errors below.
+                    {{ form.errors }}
+                </div>
+            </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                    <div class="flex flex-col gap-6">
+                        <div class="flex-grow flex flex-col items-center justify-center p-10 border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group relative"
+                            id="dropzone">
+                            {{ form.resume_file }}
+                            <div
+                                class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-4xl"
+                                    data-icon="upload_file">upload_file</span>
+                            </div>
+                            <h3 class="text-headline-sm font-headline-sm text-text-heading mb-2">Upload Resume</h3>
+                            <p class="text-body-base text-on-surface-variant text-center">
+                                Drag and drop your PDF here, or <span class="text-primary font-body-bold">browse</span>
+                            </p>
+                            <span
+                                class="mt-4 px-3 py-1 bg-surface-container text-label-caps font-label-caps rounded-full text-on-surface-variant">
+                                PDF ONLY • MAX 5MB
+                            </span>
+                            <div class="hidden absolute inset-0 bg-white rounded-xl flex flex-col items-center justify-center p-6 text-center"
+                                id="filePreview">
+                                <span class="material-symbols-outlined text-success-green text-5xl mb-4"
+                                    data-icon="task">task</span>
+                                <p class="text-body-bold text-primary truncate max-w-full px-4" id="fileName"></p>
+                                <button type="button" class="mt-4 text-critical-red font-label-caps hover:underline"
+                                    id="removeFile">REPLACE FILE</button>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-surface-container-low border border-border-subtle rounded-xl">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="material-symbols-outlined text-primary"
+                                    data-icon="alternate_email">alternate_email</span>
+                                <label class="text-body-bold text-text-heading" for="email">Email Address
+                                    (Optional)</label>
+                            </div>
+                            <p class="text-label-caps text-on-surface-variant mb-4">Get a detailed PDF report sent to
+                                your inbox.</p>
+                            {{ form.email }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <div
+                            class="flex-grow bg-white border border-border-subtle rounded-xl shadow-sm overflow-hidden flex flex-col">
+                            <div
+                                class="bg-surface-container-low px-6 py-4 border-b border-border-subtle flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary"
+                                        data-icon="description">description</span>
+                                    <h3 class="text-body-bold text-text-heading">Job Description</h3>
+                                </div>
+                                <span class="text-label-caps text-on-surface-variant uppercase">Required</span>
+                            </div>
+                            {{ form.job_description }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <button type="submit"
+                        class="group relative w-full md:w-auto md:min-w-[320px] bg-primary text-on-primary py-4 px-12 rounded-xl font-headline-sm shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 transition-all active:scale-[0.98] flex items-center justify-center gap-3 overflow-hidden"
+                        id="analyzeBtn">
+                        <span class="relative z-10" id="btnText">Analyze My Resume</span>
+                        <span
+                            class="material-symbols-outlined relative z-10 transition-transform group-hover:translate-x-1"
+                            id="btnIcon" data-icon="arrow_forward">arrow_forward</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileNameDisplay = document.getElementById('fileName');
+        const removeFileBtn = document.getElementById('removeFile');
+        const uploadForm = document.getElementById('uploadForm');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => dropzone.classList.add('dropzone-active'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => dropzone.classList.remove('dropzone-active'), false);
+        });
+
+        fileInput.addEventListener('change', function (e) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.type === "application/pdf") {
+                    fileNameDisplay.textContent = file.name;
+                    filePreview.classList.remove('hidden');
+                } else {
+                    alert("Please upload a PDF file.");
+                    this.value = '';
+                }
+            }
+        });
+
+        removeFileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.value = '';
+            filePreview.classList.add('hidden');
+        });
+
+        uploadForm.addEventListener('submit', () => {
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = `
+            <span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span>
+            <span>Processing...</span>
+        `;
+        });
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+        const splashScreen = document.getElementById('splashScreen');
+        const splashText = document.getElementById('splashText');
+        const canvasContainer = document.getElementById('splashCanvasContainer');
+
+        const isDebugMode = "{{ debug_mode|yesno:'true,false' }}" === "true";
+        const hasVisited = sessionStorage.getItem('resumelyVisited');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function removeSplash() {
+            splashScreen.style.opacity = '0';
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                if (window.splashRenderer) {
+                    window.splashRenderer.dispose();
+                    canvasContainer.innerHTML = '';
+                }
+            }, 800);
+        }
+
+        if (hasVisited && !isDebugMode) {
+            splashScreen.style.display = 'none';
+        } else {
+            sessionStorage.setItem('resumelyVisited', 'true');
+
+            let webglSupported = true;
+            try {
+                const canvas = document.createElement('canvas');
+                webglSupported = !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+            } catch (e) {
+                webglSupported = false;
+            }
+
+            if (!webglSupported || prefersReducedMotion) {
+                splashText.style.opacity = '1';
+                setTimeout(removeSplash, 2000);
+            } else {
+                const clock = new THREE.Clock();
+                const scene = new THREE.Scene();
+                // Allow HTML gradient to show through by leaving scene.background transparent
+
+                const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+                camera.position.set(0, 0, 8);
+
+                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                canvasContainer.appendChild(renderer.domElement);
+                window.splashRenderer = renderer;
+
+                const docGeometry = new RoundedBoxGeometry(1.5, 2.1, 0.1, 4, 0.05);
+                const docMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    roughness: 0.1,
+                    metalness: 0.2,
+                    emissive: 0x00288e,
+                    emissiveIntensity: 0.15
+                });
+                const docMesh = new THREE.Mesh(docGeometry, docMaterial);
+
+                const edgesGeometry = new THREE.EdgesGeometry(docGeometry);
+                const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x00288e, transparent: true, opacity: 0.3 });
+                const docEdges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                docMesh.add(docEdges);
+
+                const checkGeo = new THREE.PlaneGeometry(0.5, 0.1);
+                const checkMat = new THREE.MeshBasicMaterial({ color: 0x00288e });
+                const checkMesh1 = new THREE.Mesh(checkGeo, checkMat);
+                checkMesh1.position.set(-0.2, 0.3, 0.06);
+                docMesh.add(checkMesh1);
+
+                const checkMesh2 = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.1), checkMat);
+                checkMesh2.position.set(0, -0.1, 0.06);
+                docMesh.add(checkMesh2);
+
+                docMesh.scale.set(0.01, 0.01, 0.01);
+                scene.add(docMesh);
+
+                const ringGeo = new THREE.TorusGeometry(1.6, 0.01, 16, 100);
+                const ringMat = new THREE.MeshBasicMaterial({ color: 0x1e40af, transparent: true, opacity: 0.4 });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.rotation.x = Math.PI / 2;
+                scene.add(ring);
+
+                const particlesGeo = new THREE.BufferGeometry();
+                const particleCount = 150;
+                const posArray = new Float32Array(particleCount * 3);
+                for (let i = 0; i < particleCount * 3; i++) {
+                    posArray[i] = (Math.random() - 0.5) * 12;
+                }
+                particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                const particlesMat = new THREE.PointsMaterial({
+                    size: 0.08,
+                    color: 0x1e40af,
+                    transparent: true,
+                    opacity: 0.3,
+                    blending: THREE.NormalBlending
+                });
+                const particles = new THREE.Points(particlesGeo, particlesMat);
+                scene.add(particles);
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+                scene.add(ambientLight);
+                const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+                dirLight.position.set(5, 5, 5);
+                scene.add(dirLight);
+                const dirLight2 = new THREE.DirectionalLight(0x00288e, 0.5);
+                dirLight2.position.set(-5, -5, -5);
+                scene.add(dirLight2);
+
+                let animationTime = 0;
+
+                function animate() {
+                    if (splashScreen.style.display === 'none') return;
+
+                    requestAnimationFrame(animate);
+                    const delta = clock.getDelta();
+                    animationTime += delta;
+
+                    particles.rotation.y += 0.03 * delta;
+                    particles.rotation.x += 0.01 * delta;
+
+                    if (animationTime < 1.2) {
+                        const progress = animationTime / 1.2;
+                        const easeOut = 1 - Math.pow(1 - progress, 3);
+
+                        docMesh.scale.set(easeOut, easeOut, easeOut);
+
+                        camera.position.x = Math.sin(progress * Math.PI / 2) * 3;
+                        camera.position.z = 8 - (progress * 2.5);
+                        camera.lookAt(0, 0, 0);
+
+                        ring.position.y = Math.sin(animationTime * 4) * 1.2;
+                    } else {
+                        docMesh.scale.set(1, 1, 1);
+                        docMesh.position.y = Math.sin((animationTime - 1.2) * 2) * 0.1;
+                        docMesh.rotation.y = Math.sin((animationTime - 1.2) * 0.8) * 0.15;
+                        docMesh.rotation.x = Math.sin((animationTime - 1.2) * 1.2) * 0.05;
+
+                        ring.position.y = Math.sin(animationTime * 2) * 1.2;
+                        ring.rotation.z += 0.01;
+
+                        camera.position.x = 3 + Math.sin((animationTime - 1.2) * 0.3) * 0.5;
+                        camera.position.z = 5.5 + Math.cos((animationTime - 1.2) * 0.3) * 0.5;
+                        camera.lookAt(0, 0, 0);
+                    }
+
+                    if (animationTime >= 1.2 && animationTime < 2.0) {
+                        const textProgress = (animationTime - 1.2) / 0.8;
+                        splashText.style.opacity = textProgress;
+                    } else if (animationTime >= 2.0 && splashText.style.opacity !== '1') {
+                        splashText.style.opacity = '1';
+                    }
+
+                    if (animationTime >= 3.0 && splashScreen.style.opacity !== '0') {
+                        removeSplash();
+                    }
+
+                    renderer.render(scene, camera);
+                }
+
+                animate();
+
+                window.addEventListener('resize', () => {
+                    if (splashScreen.style.display !== 'none') {
+                        camera.aspect = window.innerWidth / window.innerHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(window.innerWidth, window.innerHeight);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
