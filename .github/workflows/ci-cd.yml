@@ -46,21 +46,3 @@ jobs:
           RENDER: "False"
         run: |
           python manage.py test
-
-  deploy:
-    name: Deploy to Render
-    needs: test
-    runs-on: ubuntu-latest
-    # Only run deploy job on pushes to main, not pull requests
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Trigger Render Deploy Hook
-        # Uses the webhook URL provided by Render to trigger the deployment.
-        # Ensure you configure this Secret in your GitHub Repository settings.
-        run: |
-          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
-            echo "Error: RENDER_DEPLOY_HOOK secret is not set!"
-            exit 1
-          fi
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
