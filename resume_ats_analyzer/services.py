@@ -132,8 +132,9 @@ def send_report_email(analysis) -> None:
         pdf_bytes = generate_report_pdf(analysis, strengths, weaknesses, keywords, suggestions)
         msg.attach("ats_report.pdf", pdf_bytes, "application/pdf")
         msg.send()
+        print(f"SUCCESS: Report email sent to {analysis.email}")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"CRITICAL SMTP ERROR: Failed to send email to {analysis.email}. Reason: {str(e)}")
 
 def send_builder_email(builder) -> None:
     if not builder.base_analysis or not builder.base_analysis.email:
@@ -152,8 +153,9 @@ def send_builder_email(builder) -> None:
         pdf_bytes = generate_builder_pdf(builder)
         msg.attach("generated_resume.pdf", pdf_bytes, "application/pdf")
         msg.send()
+        print(f"SUCCESS: Builder email sent to {builder.base_analysis.email}")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"CRITICAL SMTP ERROR: Failed to send email to {builder.base_analysis.email}. Reason: {str(e)}")
 
 def get_latex_template_text(filepath):
     try:
