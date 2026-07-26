@@ -235,8 +235,10 @@ def generate_builder_pdf(builder) -> bytes:
             f.write(builder.generated_resume_markdown)
             
         tectonic_path = os.path.join(settings.BASE_DIR, "tectonic")
+        env = os.environ.copy()
+        env["XDG_CACHE_HOME"] = os.path.join(settings.BASE_DIR, ".cache")
         try:
-            subprocess.run([tectonic_path, tex_path], check=True, cwd=tempdir, capture_output=True)
+            subprocess.run([tectonic_path, tex_path], check=True, cwd=tempdir, capture_output=True, env=env)
         except subprocess.CalledProcessError as e:
             error_msg = e.stderr.decode() if e.stderr else e.stdout.decode()
             print("Tectonic compilation failed:", error_msg)
