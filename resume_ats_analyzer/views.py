@@ -37,9 +37,10 @@ def upload_view(request):
                 analysis.status = "complete"
                 analysis.save()
                 
-                # Send email async-ish or sync
+                # Send email asynchronously so it doesn't block the web request
                 if analysis.email:
-                    send_report_email(analysis)
+                    import threading
+                    threading.Thread(target=send_report_email, args=(analysis,)).start()
                     
                 return redirect("resume_ats_analyzer:result", pk=analysis.pk)
                 
@@ -142,8 +143,9 @@ def builder_view(request):
                 builder.generated_resume_markdown = generated_markdown
                 builder.save()
                 
-                # Send email with generated resume PDF if email is available
-                send_builder_email(builder)
+                # Send email asynchronously with generated resume PDF if email is available
+                import threading
+                threading.Thread(target=send_builder_email, args=(builder,)).start()
                 
                 return redirect("resume_ats_analyzer:builder_result", pk=builder.pk)
             except Exception as e:
