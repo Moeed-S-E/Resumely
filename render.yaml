@@ -13,6 +13,8 @@ services:
         generateValue: true
       - key: ALLOWED_HOSTS
         value: "*"
+      - key: RENDER
+        value: "True"
       - key: DATABASE_URL
         sync: false
       - key: GROQ_API_KEY
