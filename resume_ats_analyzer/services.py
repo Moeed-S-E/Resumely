@@ -164,7 +164,8 @@ def get_latex_template_text(filepath):
         return ""
 
 def generate_ats_resume(resume_text: str, job_description: str) -> str:
-    template_text = get_latex_template_text('/home/moeed/CODING/Resume-ATS/resume.tex')
+    template_path = settings.BASE_DIR / 'resume.tex'
+    template_text = get_latex_template_text(template_path)
     
     prompt = f"""
 You are an expert resume writer. Rewrite the following resume to be highly ATS-friendly and tailored specifically for the following job description:
@@ -174,7 +175,7 @@ Focus on actionable metrics, clear structure, and strong professional summary.
 
 IMPORTANT FORMATTING RULE:
 You MUST output raw, valid LaTeX code that strictly uses the identical structure, packages, and custom commands defined in the following template.
-Do NOT use Markdown. Do NOT use any packages not already included in the template. Do not output anything other than the LaTeX code (no markdown code blocks, just the raw LaTeX). Make sure to properly escape special LaTeX characters (like &, %, $).
+Do NOT use Markdown. Do NOT use any packages not already included in the template (CRITICAL: Do NOT use fontspec or setmainfont). Do not output anything other than the LaTeX code (no markdown code blocks, just the raw LaTeX). Make sure to properly escape special LaTeX characters (like &, %, $).
 
 --- TEMPLATE START ---
 {template_text}
