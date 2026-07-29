@@ -11,7 +11,7 @@ class ResumeUploadForm(forms.Form):
     )
     job_description = forms.CharField(
         widget=forms.Textarea(attrs={
-            'class': 'w-full flex-grow p-6 text-body-base border-none focus:ring-0 resize-none custom-scrollbar placeholder:text-outline',
+            'class': 'w-full flex-grow p-6 text-body-base border-none focus:ring-0 resize-none custom-scrollbar placeholder:text-outline dark:bg-[#1e1e1e] dark:text-gray-200 dark:placeholder-gray-500',
             'id': 'jobDescription',
             'placeholder': 'Paste the job posting here to compare with your resume skills and requirements...'
         })
@@ -19,7 +19,7 @@ class ResumeUploadForm(forms.Form):
     email = forms.EmailField(
         required=False,
         widget=forms.EmailInput(attrs={
-            'class': 'w-full bg-white border border-border-subtle focus:border-primary focus:ring-3 focus:ring-primary/20 rounded-lg p-3 transition-all outline-none',
+            'class': 'w-full bg-white dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 focus:border-primary focus:ring-3 focus:ring-primary/20 rounded-lg p-3 transition-all outline-none dark:text-gray-200 dark:placeholder-gray-500',
             'id': 'email',
             'placeholder': 'e.g. name@company.com'
         })
@@ -46,7 +46,7 @@ class ResumeBuilderForm(forms.Form):
     )
     job_description = forms.CharField(
         widget=forms.Textarea(attrs={
-            'class': 'w-full flex-grow p-6 text-body-base border-none focus:ring-0 resize-none custom-scrollbar placeholder:text-outline',
+            'class': 'w-full flex-grow p-6 text-body-base border-none focus:ring-0 resize-none custom-scrollbar placeholder:text-outline dark:bg-[#1e1e1e] dark:text-gray-200 dark:placeholder-gray-500',
             'id': 'jobDescription',
             'placeholder': 'Paste the job description here...',
             'rows': 6

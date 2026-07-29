@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 
 <head>
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.add('light');
+        }
+    </script>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Generated Resume | Resumely</title>
@@ -62,25 +69,35 @@
     </style>
 </head>
 
-<body class="bg-[#f7f9fb] text-[#191c1e] font-['Inter'] min-h-screen flex flex-col">
-    <header class="bg-white border-b border-[#e2e8f0] shadow-sm sticky top-0 z-50">
-        <nav class="flex justify-between items-center w-full px-8 h-16 max-w-7xl mx-auto">
-            <div class="flex items-center gap-2">
-                <a href="{% url 'resume_ats_analyzer:upload' %}" class="text-2xl font-extrabold text-[#00288e] hover:underline">Resumely</a>
+<body class="bg-[#f7f9fb] dark:bg-[#121212] text-[#191c1e] dark:text-gray-200 font-['Inter'] min-h-screen flex flex-col">
+    <header class="bg-surface dark:bg-[#121212] border-b border-border-subtle dark:border-gray-700 shadow-sm sticky top-0 z-50">
+    <nav class="flex justify-between items-center w-full px-4 md:px-8 h-16 max-w-7xl mx-auto">
+        <div class="flex items-center gap-8">
+            <a href="{% url 'resume_ats_analyzer:upload' %}" class="text-2xl font-extrabold text-primary hover:underline">Resumely</a>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'resume_ats_analyzer:upload' %}" class="font-bold text-on-surface dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xl">analytics</span> Analyzer
+                </a>
+                <a href="{% url 'resume_ats_analyzer:builder' %}" class="font-bold text-on-surface dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xl">auto_awesome</span> Builder
+                </a>
             </div>
-            <div class="flex gap-4">
-                <a href="{% url 'resume_ats_analyzer:builder' %}" class="font-bold text-[#00288e] hover:underline">Build
-                    Another</a>
-            </div>
-        </nav>
-    </header>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="themeToggle" class="p-2 text-on-surface dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
+        </div>
+    </nav>
+</header>
     <main class="flex-grow w-full max-w-4xl mx-auto px-4 py-12">
         <div class="mb-8">
-            <h1 class="text-4xl font-extrabold text-slate-900">Your New ATS-Friendly Resume</h1>
-            <p class="text-slate-600 mt-2">Tailored specifically for the provided job description.</p>
+            <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white">Your New ATS-Friendly Resume</h1>
+            <p class="text-slate-600 dark:text-gray-400 mt-2">Tailored specifically for the provided job description.</p>
         </div>
 
-        <div class="bg-white border border-[#e2e8f0] rounded-xl p-8 shadow-sm h-[800px]">
+        <div class="bg-white dark:bg-[#1e1e1e] border border-[#e2e8f0] rounded-xl p-8 shadow-sm h-[800px]">
             <embed src="{% url 'resume_ats_analyzer:download_builder' pk=builder.id %}" type="application/pdf" width="100%" height="100%" class="rounded-lg shadow-inner border border-border-subtle" />
         </div>
 

@@ -1,6 +1,13 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.add('light');
+        }
+    </script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Analysis Report | Resumely</title>
@@ -110,11 +117,25 @@
     }
 </script>
 </head>
-<body class="bg-background text-on-surface font-body-base min-h-screen flex flex-col">
-<header class="bg-surface dark:bg-inverse-surface border-b border-border-subtle dark:border-outline-variant shadow-sm sticky top-0 z-50">
-    <nav class="flex justify-between items-center w-full px-base md:px-margin-desktop h-16 max-w-container-max mx-auto">
-        <div class="flex items-center gap-base">
-            <a href="{% url 'resume_ats_analyzer:upload' %}" class="text-headline-md font-headline-md font-extrabold text-primary dark:text-inverse-primary hover:underline">Resumely</a>
+<body class="bg-background text-on-surface dark:text-gray-200 font-body-base min-h-screen flex flex-col">
+<header class="bg-surface dark:bg-[#121212] border-b border-border-subtle dark:border-gray-700 shadow-sm sticky top-0 z-50">
+    <nav class="flex justify-between items-center w-full px-4 md:px-8 h-16 max-w-7xl mx-auto">
+        <div class="flex items-center gap-8">
+            <a href="{% url 'resume_ats_analyzer:upload' %}" class="text-2xl font-extrabold text-primary hover:underline">Resumely</a>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'resume_ats_analyzer:upload' %}" class="font-bold text-on-surface dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xl">analytics</span> Analyzer
+                </a>
+                <a href="{% url 'resume_ats_analyzer:builder' %}" class="font-bold text-on-surface dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xl">auto_awesome</span> Builder
+                </a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="themeToggle" class="p-2 text-on-surface dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
         </div>
     </nav>
 </header>
@@ -122,43 +143,43 @@
     <div class="flex flex-col lg:flex-row gap-gutter items-start">
         <div class="w-full lg:w-[65%] space-y-gutter">
             <div class="flex flex-col gap-base mb-base">
-                <h1 class="font-display-lg text-display-lg text-text-heading">Analysis Report</h1>
+                <h1 class="font-display-lg text-display-lg text-text-heading dark:text-white">Analysis Report</h1>
             </div>
             
-            <section class="bg-surface-container-lowest border border-border-subtle rounded-xl p-8 shadow-sm">
+            <section class="bg-surface-container-lowest dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 rounded-xl p-8 shadow-sm">
                 <div class="flex items-center gap-base mb-6">
                     <span class="material-symbols-outlined text-success-green" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                    <h2 class="font-headline-md text-headline-md text-text-heading">Strengths</h2>
+                    <h2 class="font-headline-md text-headline-md text-text-heading dark:text-white">Strengths</h2>
                 </div>
                 <ul class="space-y-4">
                     {% for item in strengths %}
                     <li class="flex gap-base">
                         <span class="text-success-green font-bold">•</span>
-                        <p class="text-on-surface">{{ item }}</p>
+                        <p class="text-on-surface dark:text-gray-200">{{ item }}</p>
                     </li>
                     {% endfor %}
                 </ul>
             </section>
             
-            <section class="bg-surface-container-lowest border border-border-subtle rounded-xl p-8 shadow-sm">
+            <section class="bg-surface-container-lowest dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 rounded-xl p-8 shadow-sm">
                 <div class="flex items-center gap-base mb-6">
                     <span class="material-symbols-outlined text-warning-amber" style="font-variation-settings: 'FILL' 1;">warning</span>
-                    <h2 class="font-headline-md text-headline-md text-text-heading">Areas to Improve</h2>
+                    <h2 class="font-headline-md text-headline-md text-text-heading dark:text-white">Areas to Improve</h2>
                 </div>
                 <ul class="space-y-4">
                     {% for item in weaknesses %}
                     <li class="flex gap-base">
                         <span class="text-warning-amber font-bold">•</span>
-                        <p class="text-on-surface">{{ item }}</p>
+                        <p class="text-on-surface dark:text-gray-200">{{ item }}</p>
                     </li>
                     {% endfor %}
                 </ul>
             </section>
             
-            <section class="bg-surface-container-lowest border border-border-subtle rounded-xl p-8 shadow-sm">
+            <section class="bg-surface-container-lowest dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 rounded-xl p-8 shadow-sm">
                 <div class="flex items-center gap-base mb-6">
                     <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">label_important</span>
-                    <h2 class="font-headline-md text-headline-md text-text-heading">Missing Keywords</h2>
+                    <h2 class="font-headline-md text-headline-md text-text-heading dark:text-white">Missing Keywords</h2>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     {% for kw in keywords %}
@@ -169,10 +190,10 @@
                 </div>
             </section>
             
-            <section class="bg-surface-container-lowest border border-border-subtle rounded-xl p-8 shadow-sm">
+            <section class="bg-surface-container-lowest dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 rounded-xl p-8 shadow-sm">
                 <div class="flex items-center gap-base mb-6">
                     <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
-                    <h2 class="font-headline-md text-headline-md text-text-heading">Improvement Suggestions</h2>
+                    <h2 class="font-headline-md text-headline-md text-text-heading dark:text-white">Improvement Suggestions</h2>
                 </div>
                 <div class="space-y-6">
                     {% for item in suggestions %}
@@ -181,7 +202,7 @@
                             <span class="material-symbols-outlined">edit_note</span>
                         </div>
                         <div>
-                            <p class="text-on-surface">{{ item }}</p>
+                            <p class="text-on-surface dark:text-gray-200">{{ item }}</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -190,14 +211,14 @@
         </div>
         
         <aside class="w-full lg:w-[35%] lg:sticky lg:top-24 space-y-gutter">
-            <div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-8 shadow-md flex flex-col items-center text-center">
+            <div class="bg-surface-container-lowest dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 rounded-xl p-8 shadow-md flex flex-col items-center text-center">
                 <div class="relative w-48 h-48 flex items-center justify-center mb-6">
                     <svg class="w-full h-full transform -rotate-90">
                         <circle cx="96" cy="96" fill="transparent" r="90" stroke="#e2e8f0" stroke-width="12"></circle>
                         <circle class="animate-gauge" cx="96" cy="96" fill="transparent" r="90" stroke="#16a34a" stroke-dasharray="565" stroke-dashoffset="565" stroke-width="12"></circle>
                     </svg>
                     <div class="absolute flex flex-col items-center">
-                        <span class="font-stat-lg text-stat-lg text-text-heading leading-none">{{ analysis.match_score|default:0 }}%</span>
+                        <span class="font-stat-lg text-stat-lg text-text-heading dark:text-white leading-none">{{ analysis.match_score|default:0 }}%</span>
                     </div>
                 </div>
             </div>
@@ -206,7 +227,7 @@
                     <span class="material-symbols-outlined">auto_awesome</span>
                     Fix My Resume
                 </a>
-                <a href="{% url 'resume_ats_analyzer:download_report' pk=analysis.id %}" target="_blank" class="w-full py-3 bg-white text-primary border border-primary font-body-bold rounded-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                <a href="{% url 'resume_ats_analyzer:download_report' pk=analysis.id %}" target="_blank" class="w-full py-3 bg-white dark:bg-[#1e1e1e] text-primary border border-primary font-body-bold rounded-lg shadow-sm hover:bg-gray-50 dark:bg-gray-800 transition-all flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined">picture_as_pdf</span>
                     Download PDF Report
                 </a>

@@ -1,6 +1,13 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.add('light');
+        }
+    </script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Resumely | ATS Builder</title>
@@ -46,22 +53,35 @@
     }
 </style>
 </head>
-<body class="bg-surface text-on-surface font-body-base min-h-screen flex flex-col">
-<header class="bg-surface border-b border-border-subtle shadow-sm flex justify-between items-center w-full px-8 h-16 max-w-7xl mx-auto sticky top-0 z-50">
-    <div class="flex items-center gap-2">
-        <a href="{% url 'resume_ats_analyzer:upload' %}" class="text-headline-md font-headline-md font-extrabold text-primary hover:underline">Resumely</a>
-    </div>
-    <div class="flex gap-4">
-        <a href="{% url 'resume_ats_analyzer:upload' %}" class="font-body-bold text-primary hover:underline">Go to Analyzer</a>
-    </div>
+<body class="bg-surface dark:bg-[#121212] text-on-surface dark:text-gray-200 font-body-base min-h-screen flex flex-col">
+<header class="bg-surface dark:bg-[#121212] border-b border-border-subtle dark:border-gray-700 shadow-sm sticky top-0 z-50">
+    <nav class="flex justify-between items-center w-full px-4 md:px-8 h-16 max-w-7xl mx-auto">
+        <div class="flex items-center gap-8">
+            <a href="{% url 'resume_ats_analyzer:upload' %}" class="text-2xl font-extrabold text-primary hover:underline">Resumely</a>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'resume_ats_analyzer:upload' %}" class="font-bold text-on-surface dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xl">analytics</span> Analyzer
+                </a>
+                <a href="{% url 'resume_ats_analyzer:builder' %}" class="font-bold text-on-surface dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xl">auto_awesome</span> Builder
+                </a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="themeToggle" class="p-2 text-on-surface dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
+        </div>
+    </nav>
 </header>
 <main class="flex-grow flex flex-col items-center px-4 md:px-10 py-12 md:py-20 relative overflow-hidden">
     <div class="w-full max-w-4xl z-10">
         <div class="text-center mb-12">
-            <h1 class="text-display-lg font-display-lg text-text-heading mb-4 leading-tight">
+            <h1 class="text-display-lg font-display-lg text-text-heading dark:text-white mb-4 leading-tight">
                 Create an ATS-Friendly <span class="text-primary">Resume</span>
             </h1>
-            <p class="text-headline-sm font-headline-sm text-gray-600 max-w-2xl mx-auto">
+            <p class="text-headline-sm font-headline-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 Upload your current resume and specify your target Job Title. Our AI will automatically rewrite and restructure it to perfectly match ATS requirements.
             </p>
         </div>
@@ -89,29 +109,29 @@
             {% csrf_token %}
             {% if base_analysis %}
             <input type="hidden" name="analysis_id" value="{{ base_analysis.id }}">
-            <div class="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4">
+            <div class="mb-6 p-4 bg-primary/10 dark:bg-primary/20 border border-primary/20 rounded-xl flex items-center gap-4">
                 <span class="material-symbols-outlined text-primary text-3xl" data-icon="description">description</span>
                 <div>
                     <h4 class="font-bold text-primary">Resume Linked!</h4>
-                    <p class="text-sm text-gray-700">We'll build your new resume using the one you uploaded for the ATS analysis. You can optionally upload a different one below to override it.</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300">We'll build your new resume using the one you uploaded for the ATS analysis. You can optionally upload a different one below to override it.</p>
                 </div>
             </div>
             {% endif %}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                 <div class="flex flex-col gap-6">
-                    <div class="flex-grow flex flex-col items-center justify-center p-10 border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group relative" id="dropzone">
+                    <div class="flex-grow flex flex-col items-center justify-center p-10 border-2 border-dashed border-outline-variant dark:border-gray-700 rounded-xl bg-surface-container-lowest dark:bg-[#1e1e1e] hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group relative" id="dropzone">
                         {{ form.resume_file }}
-                        <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <div class="w-16 h-16 bg-primary/10 dark:bg-primary/20 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <span class="material-symbols-outlined text-4xl" data-icon="upload_file">upload_file</span>
                         </div>
-                        <h3 class="text-lg font-bold text-text-heading mb-2">Upload Current Resume</h3>
-                        <p class="text-gray-600 text-center">
+                        <h3 class="text-lg font-bold text-text-heading dark:text-white mb-2">Upload Current Resume</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-center">
                             Drag and drop your PDF here, or <span class="text-primary font-bold">browse</span>
                         </p>
-                        <span class="mt-4 px-3 py-1 bg-gray-100 text-xs font-bold rounded-full text-gray-500">
+                        <span class="mt-4 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-xs font-bold rounded-full text-gray-500 dark:text-gray-400">
                             PDF ONLY • MAX 5MB
                         </span>
-                        <div class="hidden absolute inset-0 bg-white rounded-xl flex flex-col items-center justify-center p-6 text-center" id="filePreview">
+                        <div class="hidden absolute inset-0 bg-white dark:bg-[#1e1e1e] rounded-xl flex flex-col items-center justify-center p-6 text-center" id="filePreview">
                             <span class="material-symbols-outlined text-success-green text-5xl mb-4" data-icon="task">task</span>
                             <p class="font-bold text-primary truncate max-w-full px-4" id="fileName"></p>
                             <button type="button" class="mt-4 text-critical-red text-xs font-bold hover:underline" id="removeFile">REPLACE FILE</button>
@@ -119,13 +139,13 @@
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <div class="flex-grow bg-white border border-border-subtle rounded-xl shadow-sm overflow-hidden flex flex-col">
-                        <div class="bg-surface-container-low px-6 py-4 border-b border-border-subtle flex justify-between items-center">
+                    <div class="flex-grow bg-white dark:bg-[#1e1e1e] border border-border-subtle dark:border-gray-700 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                        <div class="bg-surface-container-low dark:bg-[#252525] px-6 py-4 border-b border-border-subtle dark:border-gray-700 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <span class="material-symbols-outlined text-primary" data-icon="work">work</span>
-                                <h3 class="font-bold text-text-heading">Target Job Description</h3>
+                                <h3 class="font-bold text-text-heading dark:text-white">Target Job Description</h3>
                             </div>
-                            <span class="text-xs font-bold text-gray-500 uppercase">Required</span>
+                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Required</span>
                         </div>
                         <div class="p-6 h-full flex flex-col">
                             {{ form.job_description }}
