@@ -39,15 +39,6 @@
 | 📧 **Async Email Delivery** | Sends PDF reports (via WeasyPrint) and tailor-made resumes directly to your inbox using background threading. |
 
 
-<br>
-
-## 🚀 Live Demo
-
-*(Add your awesome animated UI GIF or video here)*  
-`![Demo UI](media/demo.gif)`
-
-<br>
-
 ## 💻 Local Setup & Development
 
 ### 1. Prerequisites
